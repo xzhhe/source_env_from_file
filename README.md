@@ -14,13 +14,31 @@ fastlane add_plugin source_env_from_file
 
 set ENV["key"]=value from file like key=value
 
-**Note to author:** Add a more detailed description about this plugin here. If your plugin contains multiple actions, make sure to mention them here.
-
 ## Example
 
-Check out the [example `Fastfile`](fastlane/Fastfile) to see how to use this plugin. Try it by cloning the repo, running `fastlane install_plugins` and `bundle exec fastlane test`.
+if you have key=value file like this:
 
-**Note to author:** Please set up a sample project to make it easy for users to explore what your plugin does. Provide everything that is necessary to try out the plugin in this project (including a sample Xcode/Android project if necessary)
+```
+export name1=xiongzenghui
+name2=xiongzenghui
+name3='xiongzenghui'
+name4="xiongzenghui"
+name5=1 2 3 4 5 6
+```
+
+so you need like this use this plugin to parse file to setup to ENV
+
+```ruby
+Fastlane::Actions::SourceEnvFromFileAction.run(
+  filepath: '/path/to/key_value_file'
+)
+
+pp ENV['name1']
+pp ENV['name2']
+pp ENV['name3']
+pp ENV['name4']
+pp ENV['name5']
+```
 
 ## Run tests for this plugin
 

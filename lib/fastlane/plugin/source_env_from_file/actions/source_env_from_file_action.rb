@@ -5,7 +5,36 @@ module Fastlane
   module Actions
     class SourceEnvFromFileAction < Action
       def self.run(params)
-        UI.message("The source_env_from_file plugin is working!")
+        filepath = params[:filepath]
+
+        IO.foreach(filepath) {|line|
+          aline = line.gsub('export', '')
+          # UI.important "aline: #{aline}"
+
+          # key='value'
+          mach_result = /(.*)=\"(.*)\"/.match(aline)
+          
+          # key=value
+          unless mach_result
+            mach_result = /(.*)=(.*)/.match(aline)
+          end
+          
+          # key=value
+          unless mach_result
+            mach_result = /(.*)=(.*)/.match(aline)
+          end
+          next unless mach_result
+
+          key = mach_result[1]
+          value = mach_result[2]
+
+          if key && value
+            key.strip!
+            value.strip!
+            # UI.important "#{key}=#{value}"
+            ENV[key] = value
+          end
+        }
       end
 
       def self.description
@@ -16,31 +45,32 @@ module Fastlane
         ["xiongzenghui"]
       end
 
-      def self.return_value
-        # If your method provides a return value, you can describe here what it does
-      end
-
       def self.details
-        # Optional:
         "set ENV['key']=value from file like key=value"
       end
 
       def self.available_options
         [
-          # FastlaneCore::ConfigItem.new(key: :your_option,
-          #                         env_name: "SOURCE_ENV_FROM_FILE_YOUR_OPTION",
-          #                      description: "A description of your option",
-          #                         optional: false,
-          #                             type: String)
+          FastlaneCore::ConfigItem.new(
+            key: :filepath,
+            description: "filepath for env key=value file",
+            verify_block: proc do |value|
+              UI.user_error!("No filepath given") unless (value and not value.empty?)
+              UI.error("file not exist: #{value}") unless File.exist?(value)
+            end
+          )
         ]
       end
 
       def self.is_supported?(platform)
-        # Adjust this if your plugin only works for a particular platform (iOS vs. Android, for example)
-        # See: https://docs.fastlane.tools/advanced/#control-configuration-by-lane-and-by-platform
-        #
-        # [:ios, :mac, :android].include?(platform)
         true
+      end
+
+      def self.example_code
+        [
+          'source_env_from_file(filepath: "/Users/xiongzenghui/Desktop/env_data")
+          pp ENV["XXX"]'
+        ]
       end
     end
   end

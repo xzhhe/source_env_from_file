@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = 'zxcvb1234001@163.com'
 
   spec.summary       = 'set ENV["key"]=value from file like key=value'
-  # spec.homepage      = "https://github.com/<GITHUB_USERNAME>/fastlane-plugin-source_env_from_file"
+  spec.homepage      = 'https://github.com/xzhhe/source_env_from_file'
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)
